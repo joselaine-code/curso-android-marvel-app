@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id("io.gitlab.arturbosch.detekt").version("$detekt_version")
+    id 'com.google.gms.google-services'
 }
 
 apply plugin: 'kotlin-kapt'
@@ -18,6 +19,15 @@ android {
     compileSdkVersion 31
     buildToolsVersion "30.0.3"
 
+    signingConfigs {
+        release {
+            storeFile file('/Users/joselaineaparecida/AndroidStudioProjects/curso-android-marvel-app/store/marvel_app_key_store')
+            storePassword 'Marvel@123'
+            keyAlias 'marvel-app'
+            keyPassword 'Marvel@123'
+        }
+    }
+
     defaultConfig {
         applicationId "com.example.marvelapp"
         minSdkVersion 23
@@ -33,8 +43,21 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+            debuggable true
+        }
+        staging {
+            initWith debug
+            minifyEnabled true
+            applicationIdSuffix '.staging'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                    'proguard-rules-staging.pro'
+        }
         release {
-            minifyEnabled false
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -46,7 +69,7 @@ android {
         jvmTarget = "1.8"
         freeCompilerArgs += ['-Xopt-in=kotlin.RequiresOpIn']
     }
-    buildFeatures{
+    buildFeatures {
         viewBinding true
     }
 }
@@ -97,6 +120,10 @@ dependencies {
     // Other Libs
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
     implementation "androidx.datastore:datastore-preferences:1.0.0-rc02"
+
+    //Firebase
+    implementation platform('com.google.firebase:firebase-bom:29.0.1')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
 
     // Unit tests
     testImplementation project(":testing")
