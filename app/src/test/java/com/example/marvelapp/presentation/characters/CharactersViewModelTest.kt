@@ -9,8 +9,10 @@ import com.example.testing.model.CharacterFactory.Hero.ThreeDMan
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
 import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertNotNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.count
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
@@ -53,7 +55,7 @@ class CharactersViewModelTest {
                 )
             )
             val result = charactersViewModel.charactersPagingData("")
-            assertEquals(1, result.count())
+            assertNotNull(result.first())
         }
 
     @Test(expected = RuntimeException::class)
